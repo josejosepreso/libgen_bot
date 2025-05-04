@@ -13,7 +13,6 @@ author:         Author name here
 maintainer:     example@example.com
 copyright:      2025 Author name here
 license:        BSD-3-Clause
-license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
@@ -35,9 +34,12 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , curl
     , regex-posix
     , tagsoup
+    , telegram-bot-api
     , telegram-bot-simple
+    , text
   default-language: Haskell2010
 
 executable libgen-bot-exe
@@ -51,10 +53,13 @@ executable libgen-bot-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , curl
     , libgen-bot
     , regex-posix
     , tagsoup
+    , telegram-bot-api
     , telegram-bot-simple
+    , text
   default-language: Haskell2010
 
 test-suite libgen-bot-test
@@ -69,8 +74,11 @@ test-suite libgen-bot-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , curl
     , libgen-bot
     , regex-posix
     , tagsoup
+    , telegram-bot-api
     , telegram-bot-simple
+    , text
   default-language: Haskell2010

@@ -22,8 +22,11 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 - telegram-bot-simple
+- telegram-bot-api
 - tagsoup
 - regex-posix
+- curl
+- text
 
 ghc-options:
 - -Wall
