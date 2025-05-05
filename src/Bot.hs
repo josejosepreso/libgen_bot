@@ -71,8 +71,16 @@ libgenBot = BotApp
       Download _ -> model <# if isNothing $ selectedBook model
         then replyText $ Text.pack "No selected book."
         else do let url = (urls . fromJust . selectedBook $ model) !! (read . Text.unpack $ msg :: Int)
-                let fileUrl = unsafePerformIO . downloadBook $ url
-                replyText $ Text.pack fileUrl
+                let fileUrl = Text.pack . unsafePerformIO . downloadBook $ url
+                reply (toReplyMessage fileUrl)
+                  { replyMessageLinkPreviewOptions = Just LinkPreviewOptions
+                                                     { linkPreviewOptionsIsDisabled = Just False
+                                                     , linkPreviewOptionsUrl = Just fileUrl
+                                                     , linkPreviewOptionsPreferSmallMedia = Nothing
+                                                     , linkPreviewOptionsPreferLargeMedia = Nothing
+                                                     , linkPreviewOptionsShowAboveText = Just True
+                                                     }
+                  }
       Select _ -> do
         let m = selectBook book model
         m <# do
@@ -150,9 +158,7 @@ findBook i (b:bs)
 
 showBook :: Book -> Text
 showBook book = Text.unwords . map Text.pack $
-  [ bookId book
-  , "-"
-  , title book
+  [ title book
   ]
 
 bookInfo :: Book -> Text
