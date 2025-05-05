@@ -55,7 +55,19 @@ libgenBot = BotApp
 
     handleAction :: Action -> Model -> Eff Action Model
     handleAction action model = case action of
-      Start -> model <# replyText startMessage
+      Start -> model <# reply (toReplyMessage startMessage) { replyMessageParseMode = Just Markdown }
+      Default query -> do
+        let m = getBooks query "def" model
+        m <# showBooksList m
+      Title query -> do
+        let m = getBooks query "title" model
+        m <# showBooksList m
+      Author query -> do
+        let m = getBooks query "author" model
+        m <# showBooksList m
+      Series query -> do
+        let m = getBooks query "series" model
+        m <# showBooksList m
       Download _ -> model <# if isNothing $ selectedBook model
         then replyText $ Text.pack "No selected book."
         else do let url = (urls . fromJust . selectedBook $ model) !! (read . Text.unpack $ msg :: Int)
@@ -69,30 +81,19 @@ libgenBot = BotApp
             else do let b = fromJust $ selectedBook m
                     reply (toReplyMessage $ bookInfo b) { replyMessageParseMode = Just Markdown }
                     showBookMirrors $ urls b
-      Default query -> do
-        let m = getBooks query "def" model
-        m <# showBooksList m
-      Title query -> do
-        let m = getBooks query "title" model
-        m <# showBooksList m
-      Author query -> do
-        let m = getBooks query "author" model
-        m <# showBooksList m
-      Series query -> do
-        let m = getBooks query "series" model
-        m <# showBooksList m
       where
         msg = fromJust . getText $ action
         book = findBook (Text.unpack msg) $ booksList model
         
-        showBooksList m =
-          reply (toReplyMessage "Select a book:") { replyMessageReplyMarkup =
-                                                      Just ( SomeInlineKeyboardMarkup
-                                                             . booksInlineKeyboard
-                                                             . booksList
-                                                             $ m
-                                                           )
-                                                  }
+        showBooksList m
+          | null list = replyText "No results."
+          | otherwise = reply (toReplyMessage "Select a book:") { replyMessageReplyMarkup =
+                                                                  Just ( SomeInlineKeyboardMarkup
+                                                                         . booksInlineKeyboard
+                                                                         $ list
+                                                                       )
+                                                                }
+          where list = booksList m
         
         booksInlineKeyboard :: [Book] -> InlineKeyboardMarkup
         booksInlineKeyboard books = InlineKeyboardMarkup
@@ -117,7 +118,14 @@ libgenBot = BotApp
           ]
     
     startMessage = Text.unlines
-      [ "Lineas de texto de comando /start"
+      [ "Telegram bot for downloading books from https://libgen.is"
+      , ""
+      , "*Available commands:*"
+      , "/start - show this message"
+      , "/default <query> - defaul search"
+      , "/title <title> - search by book title"
+      , "/author <author> - search by author"
+      , "/series <series> - search by series"
       ]
 
 getText :: Action -> Maybe Text
