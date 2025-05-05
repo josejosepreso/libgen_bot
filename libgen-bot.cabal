@@ -24,7 +24,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Bot
+      Libgen
   other-modules:
       Paths_libgen_bot
   autogen-modules:
