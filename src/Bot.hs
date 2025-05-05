@@ -130,7 +130,7 @@ libgenBot = BotApp
       , ""
       , "*Available commands:*"
       , "/start - show this message"
-      , "/default <query> - defaul search"
+      , "/default <query> - default search"
       , "/title <title> - search by book title"
       , "/author <author> - search by author"
       , "/series <series> - search by series"
